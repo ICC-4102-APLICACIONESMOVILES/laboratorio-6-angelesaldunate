@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 // The user picked a contact.
                 // The Intent's data Uri identifies which contact was selected.
 
-                // Do something with the contact here (bigger example below)
+                // Do something wi the contact here (bigger example below)
             }
         }
     }
