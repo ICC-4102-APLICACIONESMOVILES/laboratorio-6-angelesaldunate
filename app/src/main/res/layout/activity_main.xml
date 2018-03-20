@@ -21,13 +21,13 @@
 
     <TextView
         android:id="@+id/textViewNombre"
-        android:layout_width="187dp"
+        android:layout_width="192dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="" />
+        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
         android:id="@+id/textViewPassword"
@@ -41,10 +41,12 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="118dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal||bottom"
         android:onClick="logOut"
         android:text="Logout"
+
         />
 
 
