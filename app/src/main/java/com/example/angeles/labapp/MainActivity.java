@@ -18,17 +18,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
-    public void openLogin(View view) {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra(EXTRA_MESSAGE,"Sent!");
-        SharedPreferences preferences = getSharedPreferences("text", 0);
-        String value1 = preferences.getString("email_devuelto",null);
-        String value2 = preferences.getString("password_devuelto",null);
-        if (value1 == null && value2==null) {
+        CredentialManage nueva = new CredentialManage();
+        if (!nueva.verificarCredenciales(this)) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra(EXTRA_MESSAGE,"Sent!");
             //iniciaractividad solo si no existe anteriormente
             startActivityForResult(intent,SEND_MESSAGE);
         }
+    }
+    public void logOut(View view) {
+        CredentialManage nueva = new CredentialManage();
+        nueva.borrarCredenciales(this);
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra(EXTRA_MESSAGE,"Sent!");
+        //iniciaractividad solo si no existe anteriormente
+        startActivityForResult(intent,SEND_MESSAGE);
 
     }
     public void onBackPressed(){
@@ -48,13 +52,9 @@ public class MainActivity extends AppCompatActivity {
                 TextView textViewpass = findViewById(R.id.textViewPassword);
                 textViewpass.setText(password);
 
+                CredentialManage nueva = new CredentialManage();
+                nueva.guardarCredenciales(this,email,password);
 
-                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-
-                editor.putString("email_guardado", email);
-                editor.putString("password_guardada", password);
-                editor.commit();
 
 
             }

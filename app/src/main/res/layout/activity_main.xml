@@ -7,17 +7,6 @@
     android:orientation="vertical"
     tools:context="com.example.angeles.labapp.MainActivity">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="openLogin"
-        android:text="Login"
-        android:layout_gravity="center_horizontal"
-        tools:layout_editor_absoluteX="280dp"
-        tools:layout_editor_absoluteY="16dp" />
-
-
 
     <TextView
         android:id="@+id/textViewBienvenido"
@@ -35,6 +24,9 @@
         android:layout_width="187dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:text="" />
 
     <TextView
@@ -42,8 +34,18 @@
         android:layout_width="192dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:text="" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="logOut"
+        android:text="Logout"
+        />
 
 
 </LinearLayout>
