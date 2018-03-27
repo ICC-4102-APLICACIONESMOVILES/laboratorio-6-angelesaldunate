@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 String email = data.getStringExtra("email_devuelto");
                 String password = data.getStringExtra("password_devuelto");
-                //TextView textViewmail = findViewById(R.id.textViewNombre);
-               // textViewmail.setText(email);
+                TextView textViewmail = findViewById(R.id.Nombreusuario);
+                textViewmail.setText(email);
                 //TextView textViewpass = findViewById(R.id.textViewPassword);
                 //textViewpass.setText(password);
 
@@ -93,13 +93,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.db) {
             fragmentactive=true;
-           // fragment=new AzulFragment();
-        } else if (id == R.id.search) {
-          //  fragment=new VerdeFragment();
-            fragmentactive=true;
-        //}// else if (id == R.id.nav_slideshow) {
+            fragment=new FormFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.framenew,fragment).addToBackStack("null").commit();
 
-       // } //else if (id == R.id.nav_manage) {
+        } else if (id == R.id.event) {
+            fragment=new ListFragment();
+            fragmentactive=true;
+            getSupportFragmentManager().beginTransaction().replace(R.id.framenew,fragment).addToBackStack("null").commit();
+
+            //}// else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.search) {
+            fragment=new ResumeFragment();
+            fragmentactive=true;
+            getSupportFragmentManager().beginTransaction().replace(R.id.framenew,fragment).addToBackStack("null").commit();
 
         } else if (id == R.id.logout) {
             CredentialManage nueva = new CredentialManage();
@@ -109,10 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //iniciaractividad solo si no existe anteriormente
             startActivityForResult(intent,SEND_MESSAGE);
         }
-        if(fragmentactive){
-            getSupportFragmentManager().beginTransaction().replace(R.id.drawer_layout,fragment).commit();
 
-        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
