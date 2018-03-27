@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 String email = data.getStringExtra("email_devuelto");
                 String password = data.getStringExtra("password_devuelto");
-                //TextView textViewmail = findViewById(R.id.textViewNombre);
-               // textViewmail.setText(email);
+                TextView textViewmail = findViewById(R.id.Nombreusuario);
+                textViewmail.setText(email);
                 //TextView textViewpass = findViewById(R.id.textViewPassword);
                 //textViewpass.setText(password);
 
