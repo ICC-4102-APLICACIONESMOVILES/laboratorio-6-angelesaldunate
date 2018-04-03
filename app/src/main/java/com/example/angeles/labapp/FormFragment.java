@@ -1,14 +1,22 @@
 package com.example.angeles.labapp;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -24,6 +32,9 @@ public class FormFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+
+    private static final String DATABASE_NAME = "movies_db";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,15 +71,80 @@ public class FormFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+
         // Inflate the layout for this fragment
 
         return inflater.inflate(R.layout.fragment_form, container, false);
+
     }
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        setSpinnerData(view);
+
+        Button button = (Button) view.findViewById(R.id.buttonsend);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final FormDatabase formDatabase=Room.databaseBuilder(view.getContext(),FormDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+
+                EditText editTextnam = (EditText) view.findViewById(R.id.editTextName);
+                final String name = editTextnam.getText().toString();
+
+                EditText editTextdate = (EditText) view.findViewById(R.id.editTextDate);
+                final String date = editTextdate.getText().toString();
+
+                EditText editTextdes = (EditText) view.findViewById(R.id.editTextDescription);
+                final String des = editTextdes.getText().toString();
+                Spinner spinner = (Spinner) view.findViewById(R.id.spinnercateg);
+                final String typ = spinner.getSelectedItem().toString();
+
+                final long unixTime = System.currentTimeMillis() / 1000L;
+                final String unixTime1 = Long.toString(unixTime);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Forms form =new Forms();
+                        form.setFormId(unixTime1);
+                        form.setFormName(name);
+                        form.setFormDate(date);
+                        form.setFormDescription(des);
+                        form.setFormCategorie(typ);
+                        formDatabase.daoAccess () . insertOnlySingleForm (form);
+                    }
+                }) .start();
+            }
+
+
+
+        });
+
+
+
+
+
+    }
+
+    private void setSpinnerData(View view) {
+        List<String> spinnerArrayf =  new ArrayList<String>();
+        spinnerArrayf.add("Encuesta");
+        spinnerArrayf.add("Inspeccion");
+        spinnerArrayf.add("Reporte");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_spinner_item, spinnerArrayf);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner sItems = (Spinner) view.findViewById(R.id.spinnercateg);
+        sItems.setAdapter(adapter);
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -106,4 +182,5 @@ public class FormFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

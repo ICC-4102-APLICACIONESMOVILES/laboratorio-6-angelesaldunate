@@ -1,8 +1,11 @@
 package com.example.angeles.labapp;
 
+
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -30,9 +33,13 @@ public class ListFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
+    private static final String DATABASE_NAME = "movies_db";
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private List<Forms> all;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,7 +88,26 @@ public class ListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ListView lv = (ListView) view.findViewById(R.id.lista);
+        final ListView lv = (ListView) view.findViewById(R.id.lista);
+        final FormDatabase formDatabase= Room.databaseBuilder(view.getContext(),FormDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+              all = formDatabase.daoAccess().getAll();
+                Handler mainHandler = new Handler(getActivity().getMainLooper());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        FormAdapter adapter = new FormAdapter(getContext(), all);
+
+
+                        lv.setAdapter(adapter);
+                    }
+                });
+
+            }
+        }) .start();
 
 
         // Initializing a new String Array
@@ -92,12 +118,17 @@ public class ListFragment extends Fragment {
                 "Name Form4              23/13/18       description"
         };
 
+
+        //ArrayAdapter<Forms> arrayAdapter = new ArrayAdapter<Forms>(getActivity() , android.R.layout.simple_list_item_1,all);
+
+        //lv.setAdapter(arrayAdapter);
         // Create a List from String Array elements
-        final List<String> fruits_list = new ArrayList<String>(Arrays.asList(fruits));
+        //final List<String> fruits_list = new ArrayList<String>(Arrays.asList(fruits));
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity() , android.R.layout.simple_list_item_1, fruits_list);
+//        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity() , android.R.layout.simple_list_item_1,fruits_list);
 
-        lv.setAdapter(arrayAdapter);
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
