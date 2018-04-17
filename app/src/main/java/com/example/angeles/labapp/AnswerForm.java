@@ -87,11 +87,18 @@ public class AnswerForm extends Fragment {
                 EditText editTextLn = (EditText) view.findViewById(R.id.editTextQ2);
                 final String date = editTextLn.getText().toString();
 
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        Bundle bundle = getArguments();
+
+
+                        int myInt = bundle.getInt("form_Id");
+
                         AnswerSet anset =new AnswerSet();
-                        //form.setFormId(unixTime1);
+                        anset.setFormId(myInt);
+                        formDatabase.daoAnswer().insertOnlySingleAnswerSet(anset);
                         //anset.setFormName(name);
                         //form.setFormDate(date);
                         //form.setFormDescription(des);

@@ -15,7 +15,7 @@ import java.util.List;
 public interface DaoAnswer {
 
     @Insert
-    void insertOnlySingleAnswerSet(Forms formid);
+    void insertOnlySingleAnswerSet(AnswerSet anset);
     @Insert
     void insertOnlySingleAnswer (AnswerSet answerSet, Questions questions );
 

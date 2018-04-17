@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static final int SEND_MESSAGE = 1;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
+    private NetworkManager networkManager;
 
     private static final String DATABASE_NAME = "movies_db";
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
 
 
 

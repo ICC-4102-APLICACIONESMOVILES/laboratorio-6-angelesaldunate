@@ -3,8 +3,10 @@ package com.example.angeles.labapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -32,6 +34,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +54,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /**
      * Id to identity READ_CONTACTS permission request.
+     *
      */
+    private NetworkManager networkManager;
+
     private static final int REQUEST_READ_CONTACTS = 0;
+
+    private static final String DATABASE_NAME = "movies_db";
+
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -99,6 +115,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        networkManager = NetworkManager.getInstance(this);
+
     }
 
     private void populateAutoComplete() {
@@ -160,8 +178,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String email = mEmailView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -188,30 +206,54 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView = mEmailView;
             cancel = true;
         }
+        try {
+            //ignacio@magnet.cl
+            networkManager.login(email, password, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    getForms();
+                    showProgress(true);
+                    mAuthTask = new UserLoginTask(email, password);
+                    mAuthTask.execute((Void) null);
+                    // Creo el intent y le mando el mail y pass
+                    Context context = getApplicationContext();
+                    CharSequence text = "Credenciales Validas";
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+
+                    Intent resultIntent = new Intent();
+
+                    resultIntent.putExtra("email_devuelto",email);
+                    resultIntent.putExtra("password_devuelto",password);
+
+                    setResult(MainActivity.RESULT_OK, resultIntent);
+                    finish();
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // TODO: Handle error
+                    System.out.println(error);
+
+
+
+                }
+            },this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+
+
+
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
-            // Creo el intent y le mando el mail y pass
-            Context context = getApplicationContext();
-            CharSequence text = "Credenciales Validas";
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
-
-            Intent resultIntent = new Intent();
-
-            resultIntent.putExtra("email_devuelto",email);
-            resultIntent.putExtra("password_devuelto",password);
-            setResult(MainActivity.RESULT_OK, resultIntent);
-            finish();
         }
     }
 
@@ -370,6 +412,69 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+
+
+
+
     }
+    private void getForms(){
+        networkManager.getForms(new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                //parsear el Json
+                try {
+                    JSONArray jsonform = response.getJSONArray("0");
+                    parsetoDatabase(jsonform);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(response);
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // TODO: Handle error
+                System.out.println(error);
+            }
+        });
+    }
+    private void parsetoDatabase(JSONArray jsonform){
+        final FormDatabase formDatabase= Room.databaseBuilder(this,FormDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+
+
+        for (int i=0; i<jsonform.length();i++){
+            try {
+                final String name = jsonform.getJSONObject(i).get("name").toString();
+                final String date = jsonform.getJSONObject(i).get("updated_at").toString();
+                JSONArray numberq = (JSONArray) jsonform.getJSONObject(i).get("fieldsets");
+                final String numeroqe =   String.valueOf(numberq.length());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Forms form =new Forms();
+                        //form.setFormId(unixTime1);
+                        form.setFormName(name);
+                        form.setFormDate(date);
+                        form.setFormDescription(numeroqe);
+                        form.setFormCategorie("cat1");
+                        formDatabase.daoAccess () . insertOnlySingleForm (form);
+
+                    }
+                }) .start();
+
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
+
 }
 
