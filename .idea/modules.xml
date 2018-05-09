@@ -4,8 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://C:\Users\ING\Desktop\laboratorio-5-angelesaldunate\app\app.iml" filepath="C:\Users\ING\Desktop\laboratorio-5-angelesaldunate\app\app.iml" />
+      <module fileurl="file://C:\Users\Angeles\Desktop\New folder\laboratorio-6-angelesaldunate\app\app.iml" filepath="C:\Users\Angeles\Desktop\New folder\laboratorio-6-angelesaldunate\app\app.iml" />
       <module fileurl="file://C:\Users\ING\Desktop\laboratorio-5-angelesaldunate\laboratorio.iml" filepath="C:\Users\ING\Desktop\laboratorio-5-angelesaldunate\laboratorio.iml" />
-      <module fileurl="file://$PROJECT_DIR$/laboratorio-5-angelesaldunate.iml" filepath="$PROJECT_DIR$/laboratorio-5-angelesaldunate.iml" />
+      <module fileurl="file://C:\Users\Angeles\Desktop\New folder\laboratorio-6-angelesaldunate\laboratorio-5-angelesaldunate.iml" filepath="C:\Users\Angeles\Desktop\New folder\laboratorio-6-angelesaldunate\laboratorio-5-angelesaldunate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/laboratorio-6-angelesaldunate.iml" filepath="$PROJECT_DIR$/laboratorio-6-angelesaldunate.iml" />
     </modules>
   </component>
 </project>

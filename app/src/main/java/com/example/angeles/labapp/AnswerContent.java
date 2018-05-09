@@ -2,6 +2,7 @@ package com.example.angeles.labapp;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,37 +11,37 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.TextView;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ResumeFragment.OnFragmentInteractionListener} interface
+ * {@link AnswerContent.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ResumeFragment#newInstance} factory method to
+ * Use the {@link AnswerContent#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ResumeFragment extends Fragment {
+public class AnswerContent extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final String DATABASE_NAME = "movies_db";
-    private List<AnswerSet> all;
-
-
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private static final String DATABASE_NAME = "movies_db";
+
 
     private OnFragmentInteractionListener mListener;
 
-    public ResumeFragment() {
+    public AnswerContent() {
         // Required empty public constructor
     }
 
@@ -50,11 +51,11 @@ public class ResumeFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ResumeFragment.
+     * @return A new instance of fragment AnswerContent.
      */
     // TODO: Rename and change types and number of parameters
-    public static ResumeFragment newInstance(String param1, String param2) {
-        ResumeFragment fragment = new ResumeFragment();
+    public static AnswerContent newInstance(String param1, String param2) {
+        AnswerContent fragment = new AnswerContent();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -74,52 +75,65 @@ public class ResumeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_resume, container, false);
+        return inflater.inflate(R.layout.fragment_answer_content, container, false);
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        final ListView lv = (ListView) view.findViewById(R.id.listaansw);
-        final FormDatabase formDatabase= Room.databaseBuilder(view.getContext(),FormDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
 
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Bundle bundle = getArguments();
+        final int myInt = bundle.getInt("Awnset_Id");
+        final FormDatabase formDatabase = Room.databaseBuilder(getContext(), FormDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+        final TextView fId = (TextView) view.findViewById(R.id.formIdAns);
+        final TextView frDate = (TextView) view.findViewById(R.id.dateAnsw);
+        final TextView frLat = (TextView) view.findViewById(R.id.LatitAns);
+        final TextView frLog = (TextView) view.findViewById(R.id.LongAnsw);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                all = formDatabase.daoAnswer().getAllSetAnswer();
+                final AnswerSet answerSet = formDatabase.daoAnswer().fetchOneSetAnswerbySetAnswerId(myInt);
+
+
                 Handler mainHandler = new Handler(getActivity().getMainLooper());
                 mainHandler.post(new Runnable() {
-                    @Override
                     public void run() {
-                        final AnswerAdapter adapter = new AnswerAdapter(getContext(), all);
 
 
-                        lv.setAdapter(adapter);
-                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                Fragment fragment=new AnswerContent();
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framenew,fragment).addToBackStack("null").commit();
-                                Bundle bundle = new Bundle();
-                                bundle.putInt("Awnset_Id",adapter.getItem(i).getAnswerSetId());
-                                fragment.setArguments(bundle);
+                        String date = answerSet.getDate();
+                        String lat = new Double(answerSet.getLat()).toString();
+                        String longit = new Double(answerSet.getLog()).toString();
+                        frDate.setText(date);
+                        frLat.setText(lat);
+                        frLog.setText(longit);
 
-                            }
-                        });
 
                     }
+
                 });
+
+
+
 
             }
         }) .start();
 
+        Button button = (Button) view.findViewById(R.id.botonMapa);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent inte = new Intent(getContext(), MapsActivity.class);
+                startActivity(inte);
+            }
+        });
+
 
 
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
+        // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -154,4 +168,5 @@ public class ResumeFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

@@ -145,6 +145,9 @@ public class AnswerForm extends Fragment {
                            lat = location.getLatitude();
                            log = location.getLongitude();
 
+                        }else {
+                            lat = -33.403711;
+                            log = -70.506514;
                         }
                     }
                 });

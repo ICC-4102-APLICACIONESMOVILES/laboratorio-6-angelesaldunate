@@ -23,8 +23,8 @@ public interface DaoAnswer {
     //void insertMultipleMovies (List<Forms> formsList);
     @Query("SELECT * FROM Answer WHERE answerId = :answerId")
     Answer fetchOneQuestionbyQuestionId (int answerId);
-    @Query("SELECT * FROM Answer WHERE answerSetId = :answerSetId")
-    List<Answer> fetchOneSetAnswerbySetAnswerId(int answerSetId );
+    @Query("SELECT * FROM AnswerSet WHERE answerSetId = :answerSetId")
+    AnswerSet fetchOneSetAnswerbySetAnswerId(int answerSetId );
 
     @Query("SELECT * FROM Answer")
     List<Answer> getAllAnswer();
